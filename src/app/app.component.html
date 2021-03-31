@@ -1,0 +1,76 @@
+<nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark">
+  <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+    <ul class="navbar-nav mr-auto" *ngIf="authService.role!==''">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="profil" routerLinkActive="active" href="#">Profil</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="lessons" routerLinkActive="active" href="#">Lekcje</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="tests" routerLinkActive="active" href="#">Testy</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="results" routerLinkActive="active" href="#">Wyniki</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="daily-exercises" routerLinkActive="active" href="#">Zadania dnia</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="mx-auto order-0">
+    <a class="navbar-brand mx-auto" href="http://www.pollub.pl" target="_blank">
+      Pollub
+      JLPT
+    </a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+
+  <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+    <ul class="navbar-nav ml-auto" *ngIf="authService.role==='Admin'">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="exercise-wizard" routerLinkActive="active" href="#">Ćwiczenie</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="lesson-wizard" routerLinkActive="active" href="#">Lekcja</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="test-wizard" routerLinkActive="active" href="#">Test</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto" *ngIf="authService.role!=='' && authService.isLogedIn; else loggedOut">
+      <li class="nav-item">
+        <button
+          class="btn btn-outline-light"
+          type="button"
+          (click)="logout()">Wyloguj się</button>
+      </li>
+    </ul>
+    <ng-template #loggedOut>
+      <ul class="navbar-nav ml-auto" *ngIf="loginPanel; else RegisterPanel" >
+        <li class="nav-item">
+          <button
+            class="btn btn-outline-light"
+            type="button"
+            (click)="register()">Zarejestruj się</button>
+        </li>
+      </ul>
+    </ng-template>
+    <ng-template #RegisterPanel>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <button
+            class="btn btn-outline-light"
+            type="button"
+            (click)="login()">Zaloguj się</button>
+        </li>
+      </ul>
+    </ng-template>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>
