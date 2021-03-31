@@ -1,0 +1,99 @@
+<form style="height: 100%;" [formGroup]="lessonForm">
+<div class="d-flex align-items-center mt-5 pt-5 flex-column" style="height: 80%;">
+  <h1>Stwórz lekcję</h1><br>
+
+  <div class="input-group col-sm-4">
+    <input class="form-control border border-dark" type="text" id="lessonName"
+           formControlName="lessonName">
+    <label class="form-control-placeholder" for="questionName">Nazwa lekcji</label>
+  </div>
+  
+  <div class="d-inline-block">
+	<div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown" style="margin-right: 15px">
+		<button class="btn btn-light" id="dropdownManual" ngbDropdownAnchor (focus)="myDrop.open()">Wybierz typ ćwiczenia</button>		
+		<div ngbDropdownMenu aria-labelledby="dropdownManual">
+			<div *ngFor="let type of type_index">
+				<button (click)=addType(type.id) (click)=addTypeName(type.name) ngbDropdownItem>{{type.name}}</button>
+			</div>
+		</div>
+	</div>
+	<div class="d-inline-block" ngbDropdown #myDrop2="ngbDropdown">
+		<button class="btn btn-light" id="dropdownManual2" ngbDropdownAnchor (focus)="myDrop2.open()">Wybierz ćwiczenie</button>		
+		<div ngbDropdownMenu aria-labelledby="dropdownManual2">
+			<div *ngFor="let exercise of exercise_list">
+				<button (click)=addExercise(exercise) ngbDropdownItem>{{exercise.name}}</button>
+				<!--*ngIf="exercise.type == currentType"-->
+			</div>
+		</div>
+	</div>
+  </div>
+
+  <div style="margin-top:10px" *ngIf="this.currentTypeName != ''"><h6>{{this.currentTypeName}}</h6></div>
+  <div class="exercise_list">
+	<h1 style="text-align: center">Lista ćwiczeń</h1>
+	<div *ngFor="let chosen_exercise of chosen_exercises_index">
+		<p>{{chosen_exercise.name}}
+			<button (click)=deleteExercise(chosen_exercise.name) id="deleteButton" class="btn btn-light" style="float:right">Usuń</button>
+		</p>
+	</div>
+  </div>
+
+    <!--z jakiegoś powodu zmiana nazwy w formControlName powoduje ze lista jest zawsze rozwinieta-->
+    <div class="input-group col-sm-4"> <!-- CHANGE -->
+      <input #imageInput
+             class="form-control border border-dark btn btn-dark"
+             id="theoryInput"
+             formControlName="longImageQuestion"
+             type="file"
+             accept="application/pdf"
+             (change)="processFile(imageInput)">
+      <label class="form-control-placeholder" for="theoryInput">Treść lekcji</label></div>
+  
+  <!--<div class="przyciskiZoom">
+	<button class="smaller" (click)=zoomOut($event) *ngIf="pdfSrc != ''">
+		-</button>
+	<button class="bigger" (click)=zoomIn($event) *ngIf="pdfSrc != ''">
+    +</button>
+  </div>-->
+
+  <div class="przyciski">
+    <button class="lewo" (click)=changePageLeft($event) *ngIf="pdfSrc != ''">
+      <img src="././assets/images/left.png" alt="left" id="left"/></button>
+    <button class="smaller" (click)=zoomOut($event) *ngIf="pdfSrc != ''">
+      -</button>
+    <button class="bigger" (click)=zoomIn($event) *ngIf="pdfSrc != ''">
+      +</button>
+    <button class="prawo" (click)=changePageRight($event) *ngIf="pdfSrc != ''">
+      <img src="././assets/images/right.png" alt="right" id="right"/></button>
+  </div>
+
+  <div style="width: 100%;" *ngIf="pdfSrc != ''">
+  <pdf-viewer [src]="pdfSrc" 
+              [render-text]="true"
+              style="display: block;"
+			  (after-load-complete)="callBackFn($event)"
+			  [page]="currentPage.toString()"
+			  [show-all]="false"
+			  [zoom]="scale.toString()"
+  ></pdf-viewer>
+  </div>
+  
+  <!--<div class="przyciskiNav">
+	<button class="lewo" (click)=changePageLeft($event) *ngIf="pdfSrc != ''">
+		<img src="././assets/images/left.png" alt="left" id="left"/></button>
+	<button class="prawo" (click)=changePageRight($event) *ngIf="pdfSrc != ''">
+		<img src="././assets/images/right.png" alt="right" id="right"/></button>
+  </div>-->
+  
+
+  <div class="mb-3">
+    <button
+	  (click) = create()
+      class="btn btn-outline-dark"
+      type="submit"
+      [disabled]="!lessonForm.valid">Stwórz</button>
+    <button class="btn btn-outline-dark ml-5" type="button" (click)="reset(lessonForm)">Wyczyść</button>
+  </div>
+
+</div>
+</form>

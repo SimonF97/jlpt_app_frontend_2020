@@ -1,0 +1,97 @@
+<form style="height: 100%;" [formGroup]="exerciseForm" (ngSubmit)="create()">
+<div class="d-flex align-items-center mt-5 pt-5 flex-column" style="height: 80%;">
+  <h1>Stwórz ćwiczenie</h1><br>
+
+  <select class="custom-select mb-4" id="questionType" formControlName="questionType" style="width: 30%;">
+    <option value="0" selected>Wybierz typ ćwiczenia</option>
+    <option value="TranslatePol">[1] Przetłumacz '...' na polski</option>
+    <option value="TranslateHira">[2] Przetłumacz '...' na hiraganę</option>
+    <option value="TranslateKata">[3] Przetłumacz '...' na katakanę</option>
+    <option value="TranslateKanji">[4] Przetłumacz '...' na kanji</option>
+    <option value="FillGap">[5] Wstaw odpowiednie słowo w '...'</option>
+    <option value="OrderWords">[6] Uszereguj zdanie, wskaż które słowo znajdzie się w miejscu z '*'</option>
+    <option value="FillGapText">[7] Wstaw odpowiednie słowo w '...' w dłuższym tekście</option>
+    <option value="ReadingCompText">[8] Czytanie ze zrozumieniem, odpowiedz na podstawie tekstu</option>
+    <option value="ReadingCompTextPict">[9] Czytanie ze zrozumieniem, odpowiedz na podstawie tekstu i zdjęcia</option>
+    <option value="WriteInOtherWords">[10] Napisz innymi słowami</option>
+    <option value="DescribePict">[11] Wskaż co przedstawia zdjęcie</option>
+  </select>
+
+  <div class="input-group col-sm-4">
+    <input class="form-control border border-dark" type="text" id="questionName"
+           formControlName="questionName">
+    <label class="form-control-placeholder" for="questionName">Nazwa zadania</label>
+  </div>
+
+    <div class="input-group col-sm-4" *ngIf="questionType == 'TranslatePol' || questionType == 'TranslateHira'
+                                          || questionType == 'TranslateKata' || questionType == 'TranslateKanji'
+                                          || questionType == 'FillGap' || questionType == 'OrderWords'
+                                          || questionType == 'WriteInOtherWords'; else LongText">
+      <input class="form-control border border-dark font-weight-bold" type="text" id="question"
+             formControlName="question" autocomplete="off">
+      <label class="form-control-placeholder" for="question">Pytanie</label></div>
+    <div class="input-group col-sm-4" *ngIf="questionType == 'ReadingCompTextPict'"> <!-- CHANGE -->
+      <input #imageInput
+             class="form-control border border-dark btn btn-dark"
+             id="longImageQuestion"
+             formControlName="longImageQuestion"
+             type="file"
+             accept="image/*"
+             (change)="processFile(imageInput)">
+      <label class="form-control-placeholder" for="longImageQuestion">Obraz pomocniczy</label></div>
+    <img
+      class="ht-250 mb-4"
+      [src]="imgURL"
+      *ngIf="imgURL && (questionType == 'DescribePict' || questionType == 'ReadingCompTextPict')">
+    <div class="input-group col-sm-4 " *ngIf="questionType != 0">
+      <input class="form-control border border-success text-success font-weight-bold" type="text" id="correctAnswer"
+             formControlName="correctAnswer" autocomplete="off">
+      <label class="form-control-placeholder text-success" for="correctAnswer">Poprawna odpowiedź</label></div>
+    <div class="input-group col-sm-4 " *ngIf="questionType != 0">
+      <input class="form-control border border-danger text-danger font-weight-bold" type="text" id="wrongAnswer1"
+             formControlName="wrongAnswer1" autocomplete="off">
+      <label class="form-control-placeholder text-danger" for="wrongAnswer1">Błędna odpowiedź</label></div>
+    <div class="input-group col-sm-4 " *ngIf="questionType != 0">
+      <input class="form-control border border-danger text-danger font-weight-bold" type="text" id="wrongAnswer2"
+             formControlName="wrongAnswer2" autocomplete="off">
+      <label class="form-control-placeholder text-danger" for="wrongAnswer2">Błędna odpowiedź</label></div>
+    <div class="input-group col-sm-4 " *ngIf="questionType != 0">
+      <input class="form-control border border-danger text-danger font-weight-bold" type="text" id="wrongAnswer3"
+             formControlName="wrongAnswer3" autocomplete="off">
+      <label class="form-control-placeholder text-danger" for="wrongAnswer3">Błędna odpowiedź</label></div>
+    <div class="input-group col-sm-4 " *ngIf="questionType != 0">
+      <input class="form-control border border-danger text-danger font-weight-bold" type="text" id="wrongAnswer4"
+             formControlName="wrongAnswer4" autocomplete="off">
+      <label class="form-control-placeholder text-danger" for="wrongAnswer4">Błędna odpowiedź</label></div>
+    <div class="input-group col-sm-4 " *ngIf="questionType != 0">
+      <input class="form-control border border-danger text-danger font-weight-bold" type="text" id="wrongAnswer5"
+             formControlName="wrongAnswer5" autocomplete="off">
+      <label class="form-control-placeholder text-danger" for="wrongAnswer5">Błędna odpowiedź</label></div>
+
+  <ng-template #LongText>
+    <div class="form-group col-sm-4" *ngIf="questionType == 'FillGapText' || questionType == 'ReadingCompText' ||
+                                            questionType == 'ReadingCompTextPict'; else Image">
+      <textarea class="form-control border border-dark font-weight-bold" type="text" id="longQuestion"
+                formControlName="longQuestion" rows="6"></textarea>
+      <label class="form-control-placeholder" for="longQuestion">Pytanie</label></div>
+  </ng-template>
+
+  <ng-template #Image>
+    <div class="input-group col-sm-4" *ngIf="questionType == 'DescribePict'"> <!-- CHANGE -->
+        <input #imageInput
+               class="form-control border border-dark btn btn-dark"
+               id="imageQuestion"
+               formControlName="imageQuestion"
+               type="file"
+               accept="image/*"
+               (change)="processFile(imageInput)">
+      <label class="form-control-placeholder" for="imageQuestion">Pytanie</label></div>
+  </ng-template>
+
+  <div class="mb-3">
+    <button class="btn btn-outline-dark" type="submit" [disabled]="!exerciseForm.valid">Stwórz</button>
+    <button class="btn btn-outline-dark ml-5" type="button" (click)="reset(exerciseForm)">Wyczyść</button>
+  </div>
+
+</div>
+</form>
